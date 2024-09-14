@@ -1,0 +1,127 @@
+<?xml version="1.0"?>
+<rss version="2.0">
+    <channel>
+        <title>Mylog</title>
+        <subtitle></subtitle>
+        <icon>http://example.com/images/favicon.ico</icon>
+        <link>http://example.com</link>
+        <author>
+          <name>John Doe</name>
+        </author>
+        <description></description>
+        <language>en</language>
+        <pubDate>Wed, 11 Sep 2024 13:44:06 +0800</pubDate>
+        <lastBuildDate>Wed, 11 Sep 2024 13:44:06 +0800</lastBuildDate>
+        <item>
+            <guid isPermalink="true">http://example.com/2024/09/11/%E9%A1%B9%E7%9B%AE%E9%9A%BE%E7%82%B9/</guid>
+            <title>项目难点</title>
+            <link>http://example.com/2024/09/11/%E9%A1%B9%E7%9B%AE%E9%9A%BE%E7%82%B9/</link>
+            <pubDate>Wed, 11 Sep 2024 13:44:06 +0800</pubDate>
+            <description><![CDATA[ &lt;h1 id=&#34;安易控&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#安易控&#34;&gt;#&lt;/a&gt; 安易控&lt;/h1&gt;
+&lt;p&gt;Nacos 作为配置中心&lt;/p&gt;
+&lt;p&gt;Redis 做分布式缓存、过期监听&lt;/p&gt;
+&lt;p&gt;Zookeeper 做分布式锁&lt;/p&gt;
+&lt;p&gt;WebSocket+Netty 做消息推送&lt;/p&gt;
+&lt;p&gt;阿里云 VOD 视频点播实现监控记录视频存储&lt;/p&gt;
+&lt;p&gt;使用 ES 实现全文搜索，加快对监控记录进行筛选查找&lt;/p&gt;
+&lt;p&gt;使用 RabbitMQ 进行消息异步通知&lt;/p&gt;
+&lt;h2 id=&#34;redis实现分布式缓存&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#redis实现分布式缓存&#34;&gt;#&lt;/a&gt; Redis 实现分布式缓存&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;配置 MyBatis 的本地缓存：在 MyBatis 的配置文件（通常是  &lt;code&gt;mybatis-config.xml&lt;/code&gt; ）中，启用并配置本地缓存的相关属性，例如缓存的有效期、大小等。&lt;/li&gt;
+&lt;li&gt;引入 Redis 依赖：在项目的构建文件（如 Maven 的  &lt;code&gt;pom.xml&lt;/code&gt;  或 Gradle 的  &lt;code&gt;build.gradle&lt;/code&gt; ）中添加 Redis 客户端的依赖。&lt;/li&gt;
+&lt;li&gt;创建 Redis 操作工具类：编写一个用于与 Redis 进行交互的工具类，包括连接 Redis 服务器、设置和获取缓存值等方法。&lt;/li&gt;
+&lt;li&gt;在 MyBatis 的拦截器中处理缓存：创建一个 MyBatis 的拦截器，拦截查询操作。
+&lt;ul&gt;
+&lt;li&gt;首先检查本地缓存是否命中，如果命中则直接返回结果。&lt;/li&gt;
+&lt;li&gt;如果本地缓存未命中，再从 Redis 中查找。&lt;/li&gt;
+&lt;li&gt;如果 Redis 中也未命中，则执行实际的数据库查询操作，并将结果存入 Redis 和本地缓存。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;配置拦截器：在 MyBatis 的配置文件中注册上述创建的拦截器。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;zookeeper实现分布式锁&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#zookeeper实现分布式锁&#34;&gt;#&lt;/a&gt; Zookeeper 实现分布式锁&lt;/h2&gt;
+&lt;p&gt;在 ZooKeeper 中实现分布式锁的基本原理是利用 ZooKeeper 的顺序节点（Sequential Node）和临时节点（Ephemeral Node）特性。&lt;/p&gt;
+&lt;p&gt;客户端尝试在 ZooKeeper 中创建一个带有指定路径的临时顺序节点，例如 /locks/lock-000000001。&lt;br&gt;
+客户端获取 /locks 节点下的所有子节点，并按节点名称的顺序排序。&lt;br&gt;
+客户端判断自己创建的节点是否为最小节点，如果是，则认为获取锁成功；否则，监听自己前一个节点的删除事件，并进入等待状态。&lt;br&gt;
+当前最小节点的客户端完成操作后，删除自己创建的节点，触发监听的客户端继续判断是否为最小节点，直到获取锁成功。&lt;/p&gt;
+&lt;p&gt;利用独占锁机制控制对同一监控记录的高并发操作，保证只有一个对监控记录的有效操作其余操作直接返回监控记录操作中（点赞、转发）&lt;/p&gt;
+&lt;h2 id=&#34;websocketnetty消息推送&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#websocketnetty消息推送&#34;&gt;#&lt;/a&gt; WebSocket+Netty 消息推送&lt;/h2&gt;
+&lt;p&gt;使用 WebSocket+Netty 与人工智能端进行数据交互，将模型分析的数据传给后端进行进一步处理&lt;/p&gt;
+&lt;h2 id=&#34;rabbitmq实现异步消息通知&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#rabbitmq实现异步消息通知&#34;&gt;#&lt;/a&gt; RabbitMQ 实现异步消息通知&lt;/h2&gt;
+&lt;p&gt;当接收到人工智能端发送的图片信息后在进行数据处理时将消息异步通知给对应的绑定用户&lt;/p&gt;
+&lt;h2 id=&#34;zookeeper和nacos&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#zookeeper和nacos&#34;&gt;#&lt;/a&gt; Zookeeper 和 Nacos&lt;/h2&gt;
+&lt;p&gt;Zookeeper 适用于以下场景：&lt;/p&gt;
+&lt;p&gt;需要实现分布式一致性和原子性操作的场景&lt;/p&gt;
+&lt;p&gt;需要实现分布式锁、分布式队列、分布式计数器等数据结构的场景&lt;/p&gt;
+&lt;p&gt;需要实现集中化管理配置信息的场景&lt;/p&gt;
+&lt;p&gt;Nacos 适用于以下场景：&lt;/p&gt;
+&lt;p&gt;需要实现微服务架构中的配置管理和服务发现的场景&lt;/p&gt;
+&lt;p&gt;需要实现动态更新应用程序配置的场景&lt;/p&gt;
+&lt;p&gt;需要实现微服务之间的通信和协同的场景&lt;/p&gt;
+&lt;h1 id=&#34;快易票&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#快易票&#34;&gt;#&lt;/a&gt; 快易票&lt;/h1&gt;
+&lt;p&gt;利用分布式缓存，在秒杀开始前，提供高性能余票查询，同时要考虑缓存击穿、穿透、雪崩等问题&lt;/p&gt;
+&lt;p&gt;使用第一层验证码，纯前端验证码在前端削弱瞬时高峰，将 100 毫秒内 10 万人的请求，分散成 1~2 秒内 10 万人请求&lt;/p&gt;
+&lt;p&gt;使用第二层验证码，后端验证码，进一步分散请求，同时防止机器人抢票&lt;/p&gt;
+&lt;p&gt;使用限流技术减轻无谓请求，同时给用户快速失败响应 (告知票没有了)，将 9 万请求快速失败，变成 1 万请求抢 1000 张票&lt;/p&gt;
+&lt;p&gt;使用令牌发放技术，控制抢票量，同时防止机器人刷票，比如开放 2000 令牌，即变成 8000 请求快速失败，变成 2000 请求抢 1000 张票&lt;/p&gt;
+&lt;p&gt;使用分布式锁技术，防止超卖，即 2000 人抢 1000 张票，最终只能卖出 1000 张，不能卖出 1001 张票&lt;/p&gt;
+&lt;p&gt;使用异步削峰 + 排队机制，解决吞吐量问题，实现最短间内给用户反馈，1000 请求告知票没有了，1000 请求告知排队中&lt;/p&gt;
+&lt;p&gt;使用分布式事务，保证数据最终一致性，不能库存减少了，票却没打出来&lt;/p&gt;
+&lt;h2 id=&#34;雪花算法&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#雪花算法&#34;&gt;#&lt;/a&gt; 雪花算法&lt;/h2&gt;
+&lt;p&gt;原理：生成一个 64 位的 long 类型的唯一 id&lt;/p&gt;
+&lt;p&gt;优点：&lt;/p&gt;
+&lt;p&gt;系统环境 ID 不重复：能满足高并发分布式系统环境 ID 不重复，比如分布式场景下的数据库表的 ID 生成。&lt;/p&gt;
+&lt;p&gt;生成效率极高：在高并发，以及分布式环境下，除了生成不重复 id，每秒可生成百万个不重复 id，生成效率极高。&lt;/p&gt;
+&lt;p&gt;保证基本有序递增：基于时间戳，可以保证基本有序递增，很多业务场景都有这个需求。&lt;/p&gt;
+&lt;p&gt;不依赖第三方库：不依赖第三方的库，或者中间件&lt;/p&gt;
+&lt;p&gt;算法简单，在内存中进行。&lt;/p&gt;
+&lt;p&gt;缺点：依赖服务器时间：服务器时钟回拨时可能会生成重复 id。&lt;/p&gt;
+&lt;h2 id=&#34;redis分布式缓存&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#redis分布式缓存&#34;&gt;#&lt;/a&gt; Redis 分布式缓存&lt;/h2&gt;
+&lt;p&gt;第一次访问将余票数据存入 redis 内存中，更新频率为在 redis 中缓存每车次的售票数，每五次更新一次 redis 余票数据缓存&lt;/p&gt;
+&lt;p&gt;其他实现：&lt;/p&gt;
+&lt;p&gt;ehcache 是一个纯 java 的进程内缓存框架，它直接在 jvm 虚拟机中缓存，速度快，效率高，但缓存共享麻烦，集群分布式应用不方便&lt;/p&gt;
+&lt;p&gt;Memcached： Memcached 是一个高性能的分布式内存对象缓存系统，主要用于缓存数据和减轻数据库负载。Memcached 基于内存存储，支持键值对的存储，并提供简单的 API 接口。&lt;/p&gt;
+&lt;p&gt;Hazelcast： Hazelcast 是一个开源的分布式内存数据网格，提供了分布式数据结构和集群管理功能，可以用于缓存、数据存储和分布式计算。&lt;/p&gt;
+&lt;p&gt;Apache Ignite： Apache Ignite 是一个内存中数据网格平台，提供了分布式缓存、分布式计算和分布式存储等功能，支持 SQL 查询和事务处理。&lt;/p&gt;
+&lt;h2 id=&#34;redisson分布式锁&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#redisson分布式锁&#34;&gt;#&lt;/a&gt; Redisson 分布式锁&lt;/h2&gt;
+&lt;p&gt;利用看门狗机制（锁构成：自定义 enum 参数 + 时间戳 + 车次编号），在抢票时对出票事务加上分布式锁&lt;/p&gt;
+&lt;p&gt;优点：自动延期机制（在获取锁时看门狗机制会在等待时间内在规定的时间间隔重复获取锁），&lt;/p&gt;
+&lt;p&gt;缺点：时钟不同步问题（若各个节点的时钟不同步，就有可能拿到同一把锁）&lt;/p&gt;
+&lt;h2 id=&#34;sentinel限流&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#sentinel限流&#34;&gt;#&lt;/a&gt; Sentinel 限流&lt;/h2&gt;
+&lt;p&gt;使用限流技术减轻无谓请求，同时给用户快速失败响应 (告知票没有了)，将 9 万请求快速失败，变成 1 万请求抢 1000 张票&lt;/p&gt;
+&lt;h2 id=&#34;如何解决单个用户重复请求&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#如何解决单个用户重复请求&#34;&gt;#&lt;/a&gt; 如何解决单个用户重复请求&lt;/h2&gt;
+&lt;p&gt;利用 Redis，在点击时生成用户 id + 列车号的唯一凭证，判断是否存在，存在则直接返回，不存在则直接存入 Redis 并设置 3 秒过期时间&lt;/p&gt;
+&lt;p&gt;利用 @repeatSubmit 注解防止重复提交&lt;/p&gt;
+&lt;h2 id=&#34;选座算法&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#选座算法&#34;&gt;#&lt;/a&gt; 选座算法&lt;/h2&gt;
+&lt;p&gt;选座是按照计算座位偏移量，先统计符合的车厢，再依次进行选座&lt;/p&gt;
+&lt;p&gt;先查询乘客选择的列车的所有座位类型编号而后组成和前端两排选座一样的列表，用于作参照的座位列表，再用乘客所选的座位计算出与第一个位置的绝对偏移值，再依次判断区间是否可卖，最终完成选座&lt;/p&gt;
+&lt;h2 id=&#34;购票逻辑&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#购票逻辑&#34;&gt;#&lt;/a&gt; 购票逻辑&lt;/h2&gt;
+&lt;p&gt;完成座位选择后经过前端第一层验证码，再通过后端生成的图形验证码校验后分两种情况，一部分是被限流直接返回稍后重试，一部分是抢不到令牌的也直接返回稍后重试，剩余的进入排队购票，一半告知没票了，一半告知排队中，若没有所选座位则直接随机选座，抢票成功则进入订单页面，若有则进行选座计算，无法选择则随机选座。&lt;/p&gt;
+&lt;h2 id=&#34;为什么有两层验证码&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#为什么有两层验证码&#34;&gt;#&lt;/a&gt; 为什么有两层验证码&lt;/h2&gt;
+&lt;p&gt;因为第一层前端验证码无法防止机器人刷票，第二层图形验证码无法承受瞬时高峰需要前端第一层分流&lt;/p&gt;
+ ]]></description>
+        </item>
+        <item>
+            <guid isPermalink="true">http://example.com/2024/09/05/hello-world/</guid>
+            <title>mylog</title>
+            <link>http://example.com/2024/09/05/hello-world/</link>
+            <pubDate>Thu, 05 Sep 2024 15:43:22 +0800</pubDate>
+            <description><![CDATA[ &lt;p&gt;Welcome to &lt;span class=&#34;exturl&#34; data-url=&#34;aHR0cHM6Ly9oZXhvLmlvLw==&#34;&gt;Hexo&lt;/span&gt;! This is your very first post. Check &lt;span class=&#34;exturl&#34; data-url=&#34;aHR0cHM6Ly9oZXhvLmlvL2RvY3Mv&#34;&gt;documentation&lt;/span&gt; for more info. If you get any problems when using Hexo, you can find the answer in &lt;span class=&#34;exturl&#34; data-url=&#34;aHR0cHM6Ly9oZXhvLmlvL2RvY3MvdHJvdWJsZXNob290aW5nLmh0bWw=&#34;&gt;troubleshooting&lt;/span&gt; or you can ask me on &lt;span class=&#34;exturl&#34; data-url=&#34;aHR0cHM6Ly9naXRodWIuY29tL2hleG9qcy9oZXhvL2lzc3Vlcw==&#34;&gt;GitHub&lt;/span&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;quick-start&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#quick-start&#34;&gt;#&lt;/a&gt; Quick Start&lt;/h2&gt;
+&lt;h3 id=&#34;create-a-new-post&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#create-a-new-post&#34;&gt;#&lt;/a&gt; Create a new post&lt;/h3&gt;
+&lt;p&gt;&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;$ hexo new &lt;span class=&#34;string&#34;&gt;&amp;quot;My New Post&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;More info: &lt;span class=&#34;exturl&#34; data-url=&#34;aHR0cHM6Ly9oZXhvLmlvL2RvY3Mvd3JpdGluZy5odG1s&#34;&gt;Writing&lt;/span&gt;&lt;/p&gt;
+&lt;h3 id=&#34;run-server&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#run-server&#34;&gt;#&lt;/a&gt; Run server&lt;/h3&gt;
+&lt;p&gt;&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;$ hexo server&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;More info: &lt;span class=&#34;exturl&#34; data-url=&#34;aHR0cHM6Ly9oZXhvLmlvL2RvY3Mvc2VydmVyLmh0bWw=&#34;&gt;Server&lt;/span&gt;&lt;/p&gt;
+&lt;h3 id=&#34;generate-static-files&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#generate-static-files&#34;&gt;#&lt;/a&gt; Generate static files&lt;/h3&gt;
+&lt;p&gt;&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;$ hexo generate&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;More info: &lt;span class=&#34;exturl&#34; data-url=&#34;aHR0cHM6Ly9oZXhvLmlvL2RvY3MvZ2VuZXJhdGluZy5odG1s&#34;&gt;Generating&lt;/span&gt;&lt;/p&gt;
+&lt;h3 id=&#34;deploy-to-remote-sites&#34;&gt;&lt;a class=&#34;anchor&#34; href=&#34;#deploy-to-remote-sites&#34;&gt;#&lt;/a&gt; Deploy to remote sites&lt;/h3&gt;
+&lt;p&gt;&lt;figure class=&#34;highlight bash&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;$ hexo deploy&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;More info: &lt;span class=&#34;exturl&#34; data-url=&#34;aHR0cHM6Ly9oZXhvLmlvL2RvY3Mvb25lLWNvbW1hbmQtZGVwbG95bWVudC5odG1s&#34;&gt;Deployment&lt;/span&gt;&lt;/p&gt;
+ ]]></description>
+        </item>
+    </channel>
+</rss>
